@@ -9,6 +9,7 @@ import queue
 from tkinter import font as tkfont
 
 class TodoApp:
+    # function for initializing the application
     def __init__(self, root):
         self.root = root
         self.root.title("To-do Manager")
@@ -41,6 +42,7 @@ class TodoApp:
         
         self.process_reminder_queue()
 
+    # function for defining and setting the styles for the application 
     def configure_styles(self):
         style = ttk.Style()
         
@@ -83,6 +85,7 @@ class TodoApp:
                         foreground=self.text_color,
                         arrowcolor=self.text_color)
 
+    # function for initializing the database
     def init_database(self):
         try:
             self.conn = sqlite3.connect("to-do.db")
@@ -102,6 +105,7 @@ class TodoApp:
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error connecting to database: {e}")
     
+    # function for creating the widgets for the application
     def create_widgets(self):
         self.title_font = tkfont.Font(family="Segoe UI", size=16, weight="bold")
         self.label_font = tkfont.Font(family="Segoe UI", size=10)
@@ -272,6 +276,7 @@ class TodoApp:
         
         self.selected_task_id = None
     
+    # function for loading the tasks from the database
     def load_tasks(self):
         for item in self.task_tree.get_children():
             self.task_tree.delete(item)
@@ -311,6 +316,7 @@ class TodoApp:
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error loading tasks: {e}")
     
+    # function for adding a task to the database
     def add_task(self):
         title = self.title_entry.get().strip()
         description = self.desc_entry.get().strip()
@@ -335,7 +341,8 @@ class TodoApp:
             self.status_text.set("Task added successfully")
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error adding task: {e}")
-    
+
+    # function for updating a task in the database  
     def update_task(self):
         if not self.selected_task_id:
             return
@@ -363,7 +370,8 @@ class TodoApp:
             self.status_text.set("Task updated successfully")
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error updating task: {e}")
-    
+
+    # function for deleting a task from the database 
     def delete_task(self):
         if not self.selected_task_id:
             return
@@ -383,6 +391,7 @@ class TodoApp:
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error deleting task: {e}")
     
+    # function for selecting a task from the list of tasks
     def on_task_select(self, event):
         selected_items = self.task_tree.selection()
         
@@ -414,10 +423,14 @@ class TodoApp:
         self.status_var.set(values[4])
         
         self.reminder_var.set(values[5] == "Yes")
-    
+
+    # function for double clicking on a task
+
     def on_task_double_click(self, event):
         self.edit_selected_task()
-    
+
+    # function for editing a selected task    
+
     def edit_selected_task(self):
         if not self.task_tree.selection():
             return
@@ -425,6 +438,8 @@ class TodoApp:
         self.title_entry.focus_set()
         self.status_text.set("Edit task and click Update when done")
     
+    # function for clearing the entries in the input fields
+
     def clear_entries(self):
         self.title_entry.delete(0, tk.END)
         self.desc_entry.delete(0, tk.END)
@@ -440,6 +455,7 @@ class TodoApp:
         for item in self.task_tree.selection():
             self.task_tree.selection_remove(item)
     
+    # function for showing the context menu
     def show_context_menu(self, event):
         item = self.task_tree.identify_row(event.y)
         if item:
@@ -447,6 +463,7 @@ class TodoApp:
             self.on_task_select(None)
             self.context_menu.post(event.x_root, event.y_root)
     
+    # function for changing the status of a task
     def change_status(self, status):
         if not self.selected_task_id:
             return
@@ -463,6 +480,7 @@ class TodoApp:
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error updating task status: {e}")
     
+    # function for toggling the reminder of a task
     def toggle_reminder(self):
         if not self.selected_task_id:
             return
@@ -485,6 +503,7 @@ class TodoApp:
         except sqlite3.Error as e:
             messagebox.showerror("Database Error", f"Error toggling reminder: {e}")
     
+    # function for checking the due tasks
     def check_due_tasks(self):
         today = datetime.date.today().strftime("%Y-%m-%d")
         
@@ -498,6 +517,7 @@ class TodoApp:
         except sqlite3.Error as e:
             print(f"Error checking due tasks: {e}")
     
+    # function for processing the reminder queue
     def process_reminder_queue(self):
         try:
             while not self.reminder_queue.empty():
@@ -508,6 +528,7 @@ class TodoApp:
         
         self.root.after(1000, self.process_reminder_queue)
     
+    # function for checking the reminders
     def reminder_checker(self):
         while not self.stop_thread:
             try:
@@ -531,6 +552,7 @@ class TodoApp:
                     break
                 time.sleep(10)
     
+    # function for showing the reminder
     def show_reminder(self, task_title):
         reminder_win = tk.Toplevel(self.root)
         reminder_win.title("Task Reminder")
@@ -561,6 +583,7 @@ class TodoApp:
                             padx=20, pady=5)
         close_btn.pack(pady=10)
 
+    # the main script for running the application
 if __name__ == "__main__":
     root = tk.Tk()
     app = TodoApp(root)
