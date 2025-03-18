@@ -85,7 +85,7 @@ class TodoApp:
 
     def init_database(self):
         try:
-            self.conn = sqlite3.connect("todo.db")
+            self.conn = sqlite3.connect("to-do.db")
             self.cursor = self.conn.cursor()
             
             self.cursor.execute('''
@@ -144,7 +144,7 @@ class TodoApp:
         date_frame.pack(side="left", fill="x", expand=True)
         
         tk.Label(date_frame, text="Deadline:", bg=self.dark_secondary, fg=self.text_color, 
-                font=self.label_font, width=80).pack(side="left", anchor="w")
+                font=self.label_font, width=10).pack(side="left", anchor="w")
         
         calendar_frame = tk.Frame(date_frame, bg=self.dark_secondary)
         calendar_frame.pack(side="left", fill="x", expand=True, padx=5)
@@ -165,7 +165,7 @@ class TodoApp:
         status_frame.pack(side="right", padx=10)
         
         tk.Label(status_frame, text="Status:", bg=self.dark_secondary, fg=self.text_color, 
-                font=self.label_font).pack(side="left", padx=5)
+                font=self.label_font, width="10").pack(side="left", padx=5)
         
         self.status_var = tk.StringVar(value="Pending")
         self.status_combo = ttk.Combobox(status_frame, textvariable=self.status_var, width=10, 
@@ -511,7 +511,7 @@ class TodoApp:
     def reminder_checker(self):
         while not self.stop_thread:
             try:
-                with sqlite3.connect("todo.db") as conn:
+                with sqlite3.connect("to-do.db") as conn:
                     cursor = conn.cursor()
                     
                     today = datetime.date.today().strftime("%Y-%m-%d")
